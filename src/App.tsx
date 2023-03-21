@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useState } from 'react';
+import './App.css'
+import { BookList } from './components/BookList'
+import { BookTypeList } from './components/BookTypeList'
+import { RenderGate } from './components/RenderGate'
+import { BooksContext } from './contexts/BooksContext'
+
+const APP_TITLE = 'REEDTHEESBOOKS'
 
 function App() {
+  const { selectedGenre } = useContext(BooksContext)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header>
+        <h1>{APP_TITLE}</h1>
       </header>
+      <main>
+        <BookTypeList />
+        <RenderGate renderIf={!!selectedGenre}>
+          <section>
+            <b>Selected genre - {selectedGenre}</b>
+          </section>
+          <BookList />
+        </RenderGate>
+      </main>
     </div>
-  );
+  )
 }
 
-export default App;
+const AppWithContext = () => {
+  const [selectedGenre, setSelectedGenre] = useState()
+  return (
+    <BooksContext.Provider value={{
+      selectedGenre,
+      setSelectedGenre
+    }}>
+      <App />
+    </BooksContext.Provider>
+  )
+}
+
+export default AppWithContext
